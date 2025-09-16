@@ -1,0 +1,162 @@
+[
+  {
+    "model": "planetarium.planetariumdome",
+    "pk": 1,
+    "fields": {
+      "name": "Orion",
+      "rows": 10,
+      "seats_in_row": 12
+    }
+  },
+  {
+    "model": "planetarium.planetariumdome",
+    "pk": 2,
+    "fields": {
+      "name": "Andromeda",
+      "rows": 8,
+      "seats_in_row": 15
+    }
+  },
+  {
+    "model": "planetarium.planetariumdome",
+    "pk": 3,
+    "fields": {
+      "name": "Cassiopeia",
+      "rows": 12,
+      "seats_in_row": 10
+    }
+  },
+  {
+    "model": "planetarium.planetariumdome",
+    "pk": 4,
+    "fields": {
+      "name": "Lyra",
+      "rows": 9,
+      "seats_in_row": 11
+    }
+  },
+  {
+    "model": "planetarium.planetariumdome",
+    "pk": 5,
+    "fields": {
+      "name": "Pegasus",
+      "rows": 7,
+      "seats_in_row": 14
+    }
+  },
+  {
+    "model": "planetarium.showtheme",
+    "pk": 1,
+    "fields": {"name": "Stars and Constellations"}
+  },
+  {
+    "model": "planetarium.showtheme",
+    "pk": 2,
+    "fields": {"name": "Solar System"}
+  },
+  {
+    "model": "planetarium.showtheme",
+    "pk": 3,
+    "fields": {"name": "Black Holes"}
+  },
+  {
+    "model": "planetarium.showtheme",
+    "pk": 4,
+    "fields": {"name": "Nebulas"}
+  },
+  {
+    "model": "planetarium.showtheme",
+    "pk": 5,
+    "fields": {"name": "Comets"}
+  },
+  {
+    "model": "planetarium.astronomyshow",
+    "pk": 1,
+    "fields": {
+      "title": "Night Sky Wonders",
+      "description": "Explore the night sky.",
+      "theme": 1
+    }
+  },
+  {
+    "model": "planetarium.astronomyshow",
+    "pk": 2,
+    "fields": {
+      "title": "Journey to the Sun",
+      "description": "Solar system adventure.",
+      "theme": 2
+    }
+  },
+  {
+    "model": "planetarium.astronomyshow",
+    "pk": 3,
+    "fields": {
+      "title": "Black Hole Mystery",
+      "description": "Dive into black holes.",
+      "theme": 3
+    }
+  },
+  {
+    "model": "planetarium.astronomyshow",
+    "pk": 4,
+    "fields": {
+      "title": "Colorful Nebulas",
+      "description": "Discover nebulae.",
+      "theme": 4
+    }
+  },
+  {
+    "model": "planetarium.astronomyshow",
+    "pk": 5,
+    "fields": {
+      "title": "Comet Chase",
+      "description": "Follow comets across the sky.",
+      "theme": 5
+    }
+  },
+  {
+    "model": "planetarium.showsession",
+    "pk": 1,
+    "fields": {
+      "show_time": "2025-09-16T18:00:00Z",
+      "astronomy_show": 1,
+      "planetarium_dome": 1
+    }
+  },
+  {
+    "model": "planetarium.showsession",
+    "pk": 2,
+    "fields": {
+      "show_time": "2025-09-16T20:00:00Z",
+      "astronomy_show": 2,
+      "planetarium_dome": 1
+    }
+  },
+  {
+    "model": "planetarium.showsession",
+    "pk": 3,
+    "fields": {
+      "show_time": "2025-09-17T17:00:00Z",
+      "astronomy_show": 3,
+      "planetarium_dome": 2
+    }
+  },
+  {
+    "model": "planetarium.showsession",
+    "pk": 4,
+    "fields": {
+      "show_time": "2025-09-17T19:00:00Z",
+      "astronomy_show": 4,
+      "planetarium_dome": 2
+    }
+  },
+  {
+    "model": "planetarium.showsession",
+    "pk": 5,
+    "fields": {
+      "show_time": "2025-09-18T18:30:00Z",
+      "astronomy_show": 5,
+      "planetarium_dome": 3
+    }
+  }
+]
