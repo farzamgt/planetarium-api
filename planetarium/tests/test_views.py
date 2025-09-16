@@ -1,5 +1,4 @@
 from random import randint
-
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
@@ -32,7 +31,6 @@ def sample_session():
     return ShowSession.objects.create(show_time=show_time, astronomy_show=show, planetarium_dome=dome)
 
 
-
 class PlanetariumViewTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -50,8 +48,10 @@ class PlanetariumViewTests(APITestCase):
         res = self.client.get(url)
         domes = PlanetariumDome.objects.all()
         serializer = PlanetariumDomeSerializer(domes, many=True)
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        data = res.data.get("results", [])  # <-- дістаємо "results"
+        self.assertEqual(data, serializer.data)
 
     def test_create_dome_forbidden_for_user(self):
         url = reverse("planetarium:planetariumdome-list")
@@ -73,15 +73,16 @@ class PlanetariumViewTests(APITestCase):
         url = reverse("planetarium:astronomyshow-list") + "?title=Show 1"
         res = self.client.get(url)
         serializer = AstronomyShowSerializer([show1], many=True)
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        data = res.data.get("results", [])
+        self.assertEqual(data, serializer.data)
 
     def test_list_sessions(self):
         session = sample_session()
         url = reverse("planetarium:showsession-list")
         res = self.client.get(url)
 
-        # Use the same annotated queryset as in the view
         from django.db.models import F, Count
         sessions = ShowSession.objects.annotate(
             tickets_available=F("planetarium_dome__rows") * F("planetarium_dome__seats_in_row") - Count("tickets")
@@ -92,14 +93,13 @@ class PlanetariumViewTests(APITestCase):
         )
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-        data = res.data if isinstance(res.data, list) else res.data.get("results", res.data)
-
+        data = res.data.get("results", [])
         self.assertEqual(len(data), len(serializer.data))
         for d, s in zip(data, serializer.data):
             self.assertEqual(d["id"], s["id"])
             self.assertEqual(d["show_time"], s["show_time"])
             self.assertEqual(d["tickets_available"], s["tickets_available"])
+
 
 class ShowThemeViewTests(APITestCase):
     def setUp(self):
@@ -113,12 +113,13 @@ class ShowThemeViewTests(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_list_themes(self):
-        # theme = sample_theme()
+        theme = sample_theme()
         url = reverse("planetarium:showtheme-list")
         res = self.client.get(url)
         serializer = ShowThemeSerializer(ShowTheme.objects.all(), many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        data = res.data.get("results", [])
+        self.assertEqual(data, serializer.data)
 
     def test_create_theme_forbidden_for_user(self):
         url = reverse("planetarium:showtheme-list")
@@ -135,7 +136,6 @@ class ShowThemeViewTests(APITestCase):
         self.assertTrue(ShowTheme.objects.filter(name="Admin Theme").exists())
 
 
-
 class AstronomyShowViewTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -149,23 +149,25 @@ class AstronomyShowViewTests(APITestCase):
 
     def test_list_shows_filtered_by_title(self):
         show1 = sample_show(title="Show 1")
-        # show2 = sample_show(title="Show 2")
+        show2 = sample_show(title="Show 2")
         url = reverse("planetarium:astronomyshow-list") + "?title=Show 1"
         res = self.client.get(url)
         serializer = AstronomyShowSerializer([show1], many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        data = res.data.get("results", [])
+        self.assertEqual(data, serializer.data)
 
     def test_list_shows_filtered_by_theme(self):
         theme1 = sample_theme("Theme1")
-        # theme2 = sample_theme("Theme2")
+        theme2 = sample_theme("Theme2")
         show1 = AstronomyShow.objects.create(title="Show 1", description="Desc", theme=theme1)
-        # show2 = AstronomyShow.objects.create(title="Show 2", description="Desc", theme=theme2)
+        show2 = AstronomyShow.objects.create(title="Show 2", description="Desc", theme=theme2)
         url = reverse("planetarium:astronomyshow-list") + f"?theme={theme1.id}"
         res = self.client.get(url)
         serializer = AstronomyShowSerializer([show1], many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        data = res.data.get("results", [])
+        self.assertEqual(data, serializer.data)
 
     def test_create_show_forbidden_for_user(self):
         url = reverse("planetarium:astronomyshow-list")

@@ -31,33 +31,38 @@ from planetarium.serializers import (
     TicketSeatsSerializer,
 )
 
+from .pagination import StandardResultsSetPagination
+
 
 class PlanetariumDomeViewSet(mixins.ListModelMixin,
                              mixins.CreateModelMixin,
                              viewsets.GenericViewSet):
-    queryset = PlanetariumDome.objects.all()
+    queryset = PlanetariumDome.objects.all().order_by("id")
     serializer_class = PlanetariumDomeSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    pagination_class = StandardResultsSetPagination
 
 
 class ShowThemeViewSet(mixins.ListModelMixin,
                        mixins.CreateModelMixin,
                        viewsets.GenericViewSet):
-    queryset = ShowTheme.objects.all()
+    queryset = ShowTheme.objects.all().order_by("id")
     serializer_class = ShowThemeSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    pagination_class = StandardResultsSetPagination
 
 
 class AstronomyShowViewSet(mixins.ListModelMixin,
                             mixins.CreateModelMixin,
                             mixins.RetrieveModelMixin,
                             viewsets.GenericViewSet):
-    queryset = AstronomyShow.objects.prefetch_related("theme")
+    queryset = AstronomyShow.objects.prefetch_related("theme").order_by("id")
     serializer_class = AstronomyShowSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    pagination_class = StandardResultsSetPagination
 
     @staticmethod
     def _params_to_ints(qs):
@@ -89,11 +94,12 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
                 F("planetarium_dome__rows") * F("planetarium_dome__seats_in_row")
                 - Count("tickets")
             )
-        )
+        ).order_by("id")
     )
     serializer_class = ShowSessionSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         date = self.request.query_params.get("date")
