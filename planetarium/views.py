@@ -16,7 +16,10 @@ from planetarium.models import (
     Reservation,
     Ticket,
 )
-from planetarium.permissions import IsAdminOrIfAuthenticatedReadOnly, IsOwnerOrAdmin
+from planetarium.permissions import (
+    IsAdminOrIfAuthenticatedReadOnly,
+    IsOwnerOrAdmin
+)
 from planetarium.serializers import (
     PlanetariumDomeSerializer,
     ShowThemeSerializer,
@@ -54,11 +57,17 @@ class ShowThemeViewSet(mixins.ListModelMixin,
     pagination_class = StandardResultsSetPagination
 
 
-class AstronomyShowViewSet(mixins.ListModelMixin,
-                            mixins.CreateModelMixin,
-                            mixins.RetrieveModelMixin,
-                            viewsets.GenericViewSet):
-    queryset = AstronomyShow.objects.prefetch_related("theme").order_by("id")
+class AstronomyShowViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = (
+        AstronomyShow.objects
+        .prefetch_related("theme")
+        .order_by("id")
+    )
     serializer_class = AstronomyShowSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -91,7 +100,8 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         .select_related("astronomy_show", "planetarium_dome")
         .annotate(
             tickets_available=(
-                F("planetarium_dome__rows") * F("planetarium_dome__seats_in_row")
+                F("planetarium_dome__rows")
+                * F("planetarium_dome__seats_in_row")
                 - Count("tickets")
             )
         ).order_by("id")
@@ -185,5 +195,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         return Ticket.objects.filter(reservation__user=self.request.user)
 
     def perform_create(self, serializer):
-        reservation, _ = Reservation.objects.get_or_create(user=self.request.user)
+        reservation, _ = Reservation.objects.get_or_create(
+            user=self.request.user
+        )
         serializer.save(reservation=reservation)

@@ -45,14 +45,30 @@ class ShowSessionSerializer(serializers.ModelSerializer):
 
 
 class ShowSessionListSerializer(ShowSessionSerializer):
-    show_title = serializers.CharField(source="astronomy_show.title", read_only=True)
-    dome_name = serializers.CharField(source="planetarium_dome.name", read_only=True)
-    dome_capacity = serializers.IntegerField(source="planetarium_dome.capacity", read_only=True)
+    show_title = serializers.CharField(
+        source="astronomy_show.title",
+        read_only=True
+    )
+    dome_name = serializers.CharField(
+        source="planetarium_dome.name",
+        read_only=True
+    )
+    dome_capacity = serializers.IntegerField(
+        source="planetarium_dome.capacity",
+        read_only=True
+    )
     tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = ShowSession
-        fields = ("id", "show_time", "show_title", "dome_name", "dome_capacity", "tickets_available")
+        fields = (
+            "id",
+            "show_time",
+            "show_title",
+            "dome_name",
+            "dome_capacity",
+            "tickets_available"
+        )
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -84,11 +100,21 @@ class TicketSeatsSerializer(TicketSerializer):
 class ShowSessionDetailSerializer(ShowSessionSerializer):
     astronomy_show = AstronomyShowListSerializer(read_only=True)
     planetarium_dome = PlanetariumDomeSerializer(read_only=True)
-    taken_places = TicketSeatsSerializer(source="tickets", many=True, read_only=True)
+    taken_places = TicketSeatsSerializer(
+        source="tickets",
+        many=True,
+        read_only=True
+    )
 
     class Meta:
         model = ShowSession
-        fields = ("id", "show_time", "astronomy_show", "planetarium_dome", "taken_places")
+        fields = (
+            "id",
+            "show_time",
+            "astronomy_show",
+            "planetarium_dome",
+            "taken_places"
+        )
 
 
 class ReservationSerializer(serializers.ModelSerializer):
