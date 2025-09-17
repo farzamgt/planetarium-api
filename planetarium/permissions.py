@@ -18,5 +18,14 @@ class IsOwnerOrAdmin(BasePermission):
     """
     Grants object access only to the owner or admin
     """
+
     def has_object_permission(self, request, view, obj):
-        return bool(request.user and (request.user.is_staff or obj.user == request.user or getattr(obj, 'user', None) == request.user))
+        owner = getattr(obj, "user", None) or getattr(obj, "created_by", None)
+
+        return bool(
+            request.user
+            and (
+                request.user.is_staff
+                or owner == request.user
+            )
+        )

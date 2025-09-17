@@ -184,7 +184,6 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Ticket.objects.all()
         return Ticket.objects.filter(reservation__user=self.request.user)
 
-    def get_serializer_class(self):
-        if self.action == "list":
-            return TicketListSerializer
-        return TicketSerializer
+    def perform_create(self, serializer):
+        reservation, _ = Reservation.objects.get_or_create(user=self.request.user)
+        serializer.save(reservation=reservation)
