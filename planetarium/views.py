@@ -5,7 +5,6 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from planetarium.models import (
@@ -154,11 +153,6 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
 
-class ReservationPagination(PageNumberPagination):
-    page_size = 10
-    max_page_size = 100
-
-
 class ReservationViewSet(mixins.ListModelMixin,
                          mixins.CreateModelMixin,
                          viewsets.GenericViewSet):
@@ -167,7 +161,7 @@ class ReservationViewSet(mixins.ListModelMixin,
         "tickets__show_session__planetarium_dome"
     )
     serializer_class = ReservationSerializer
-    pagination_class = ReservationPagination
+    pagination_class = StandardResultsSetPagination
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
