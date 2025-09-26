@@ -50,7 +50,7 @@ class PlanetariumViewTests(APITestCase):
         serializer = PlanetariumDomeSerializer(domes, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        data = res.data.get("results", [])  # <-- дістаємо "results"
+        data = res.data.get("results", [])
         self.assertEqual(data, serializer.data)
 
     def test_create_dome_forbidden_for_user(self):
