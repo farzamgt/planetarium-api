@@ -2,12 +2,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
-from django.urls import reverse
-
-
-REGISTER_URL = reverse("user:create")
-LOGIN_URL = reverse("user:login")
-ME_URL = reverse("user:manage")
+from user.constants import REGISTER_URL, LOGIN_URL, ME_URL
 
 
 class UserApiTests(TestCase):
